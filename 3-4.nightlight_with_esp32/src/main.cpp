@@ -38,31 +38,28 @@ void connectWiFi()  // Function to connect to WiFi
 
 WiFiClient espClient;         // Create a WiFi client for ESP32
 PubSubClient client(espClient); // Create an MQTT client using WiFi
-void reconnectMQTTClient()
-{
-    /* Checks if the MQTT client is connected*/
-    while (!client.connected())
-    {
-        Serial.print("Attempting MQTT connection...");
 
-        /*Attempts to connect to the MQTT broker.
-        Uses client.connect() to connect using CLIENT_NAME.
-        CLIENT_NAME.c_str() converts CLIENT_NAME (a string) into a const char*, which connect() expects.*/
-        if (client.connect(CLIENT_NAME.c_str()))
-        {
+unsigned long lastReconnectAttempt = 0;  // Track last reconnect attempt
+const long reconnectInterval = 5000;     // Retry every 5 seconds
+
+void reconnectMQTTClient() {
+    if (client.connected()) return;  // Exit if already connected
+
+    if (millis() - lastReconnectAttempt >= reconnectInterval) {
+        lastReconnectAttempt = millis();  // Update last attempt time
+
+        Serial.print("Attempting MQTT connection...");
+        if (client.connect(CLIENT_NAME.c_str())) {
             Serial.println("connected");
-        }
-        else
-        {
-            Serial.print("Retying in 5 seconds - failed, rc=");
-            Serial.println(client.state());
             
-            delay(5000);
+            // ✅ Resubscribe after reconnecting
+            client.subscribe(SERVER_COMMAND_TOPIC.c_str());
+            Serial.println("Subscribed to command topic.");
+        } else {
+            Serial.print("Failed, rc=");
+            Serial.println(client.state());
         }
     }
-
-    // Subscribe to the command topic when the MQTT client is reconnected
-    client.subscribe(SERVER_COMMAND_TOPIC.c_str());
 }
 
 void clientCallback(char *topic, uint8_t *payload, unsigned int length)
