@@ -65,6 +65,19 @@ void reconnectMQTTClient()
     client.subscribe(SERVER_COMMAND_TOPIC.c_str());
 }
 
+void createMQTTClient()
+{
+    /*BROKER.c_str() → Converts BROKER (a std::string) to const char*, which setServer() requires.
+    1883 → The default port for MQTT communication.*/
+    client.setServer(BROKER.c_str(), 1883);
+    
+    /*Calls reconnectMQTTClient(), which tries to establish a connection to the MQTT broker.*/
+    reconnectMQTTClient();
+
+    /*Calls clientCallback when a message is received*/
+    client.setCallback(clientCallback);
+}
+
 void clientCallback(char *topic, uint8_t *payload, unsigned int length)
 {
     /*payload is a raw byte array, since MQTT protocol transmits messages as binary data
@@ -94,19 +107,6 @@ void clientCallback(char *topic, uint8_t *payload, unsigned int length)
         digitalWrite(LED_PIN, HIGH);
     else
         digitalWrite(LED_PIN, LOW);
-}
-
-void createMQTTClient()
-{
-    /*BROKER.c_str() → Converts BROKER (a std::string) to const char*, which setServer() requires.
-    1883 → The default port for MQTT communication.*/
-    client.setServer(BROKER.c_str(), 1883);
-    
-    /*Calls reconnectMQTTClient(), which tries to establish a connection to the MQTT broker.*/
-    reconnectMQTTClient();
-
-    /*Calls clientCallback when a message is received*/
-    client.setCallback(clientCallback);
 }
 
 unsigned long lastTelemetryTime = 0;  // Tracks last send time
