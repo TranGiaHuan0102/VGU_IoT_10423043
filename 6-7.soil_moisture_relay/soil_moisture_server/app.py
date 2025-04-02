@@ -14,18 +14,6 @@ client_telemetry_topic = id + '/telemetry'
 server_command_topic = id + '/commands'
 client_name = id + 'soil_moisture_server'
 
-# Callback function when a message is received
-'''
-What the 3 params of handle_telemetry represent:
-- client :  the instance of the mqtt.Client() object that received the message.
-- userdata : user-defined object that Allows you to pass custom data, default is None.
-- message : An object of type MQTTMessage containing
-    * message.topic (str) – The topic the message was received on.
-    * message.payload (bytes) – The actual message data (needs .decode() for text).
-    * message.qos (int) – Quality of Service level (0, 1, or 2).
-    * message.retain (bool) – Whether this is a retained message.
-'''
-
 water_time = 5 # Open the relay for 5 seconds
 wait_time = 20 # Wait 20 seconds for water to soak before try again
 
@@ -52,6 +40,17 @@ def control_relay(client):
     mqtt_client.subscribe(client_telemetry_topic)
 
 
+# Callback function when a message is received
+'''
+What the 3 params of handle_telemetry represent:
+- client :  the instance of the mqtt.Client() object that received the message.
+- userdata : user-defined object that Allows you to pass custom data, default is None.
+- message : An object of type MQTTMessage containing
+    * message.topic (str) – The topic the message was received on.
+    * message.payload (bytes) – The actual message data (needs .decode() for text).
+    * message.qos (int) – Quality of Service level (0, 1, or 2).
+    * message.retain (bool) – Whether this is a retained message.
+'''
 def handle_telemetry(client, userdata, message):
     try:
         payload = json.loads(message.payload.decode())

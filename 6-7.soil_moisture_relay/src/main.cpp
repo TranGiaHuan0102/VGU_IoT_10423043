@@ -157,7 +157,7 @@ void loop() {
     // millis() returns the number of miliseconds passed since the program started running
     if (millis() - lastTelemetryTime >= telemetryInterval)
     {
-      lastTelemetryTime = millis();  // Update last checkpoint to noww
+      lastTelemetryTime = millis();  // Update last checkpoint to now 
 
       // Analog output
       int soil_moisture = calculate_soil_moisture_percentage(analogRead(SOIL_MOISTURE_PIN));
