@@ -3,5 +3,5 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
-.src/config_public.h
+.src/config_private.h
 .cloud_server/.env
