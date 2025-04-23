@@ -22,7 +22,7 @@ char mqtt_username[128];
 bool relayActive = false;
 
 void connectWiFi() {
-  WiFi.begin(SSID, PASSWORD);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("Connecting to WiFi");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -37,7 +37,7 @@ void setup_azure_client() {
   az_iot_hub_client_options options = az_iot_hub_client_options_default();
   az_result rc = az_iot_hub_client_init(
     &az_client,
-    az_span_create((uint8_t*)IOT_HUB_HOST, strlen(IOT_HUB_HOST)),
+    az_span_create((uint8_t*)IOT_HUB_HOSTNAME, strlen(IOT_HUB_HOSTNAME)),
     az_span_create((uint8_t*)IOT_HUB_DEVICE_ID, strlen(IOT_HUB_DEVICE_ID)),
     &options
   );
@@ -101,7 +101,7 @@ void handleMessage(char* topic, byte* payload, unsigned int length) {
 
 
 void connectMQTT() {
-  mqtt_client.setServer(IOT_HUB_HOST, 8883);
+  mqtt_client.setServer(IOT_HUB_HOSTNAME, 8883);
   mqtt_client.setCallback(handleMessage);
   // These are important 
   mqtt_client.setSocketTimeout(60);  
