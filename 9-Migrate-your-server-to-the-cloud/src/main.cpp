@@ -121,7 +121,7 @@ void connectMQTT() {
     }
   }
 
-  // Subscribe to C2D topic
+  // Subscribe to C2D topic   
   mqtt_client.subscribe("devices/" IOT_HUB_DEVICE_ID "/messages/devicebound/#");
 }
 
